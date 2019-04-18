@@ -20,7 +20,7 @@ $ composer require avl/admin-page
 ```
 ### Настройка
 
-Для публикации опубликации файла настроек необходимо выполнить команду:
+Для публикации файла настроек необходимо выполнить команду:
 
 ```
 $ php artisan vendor:publish --provider="Avl\AdminPage\AdminPageServiceProvider" --force
