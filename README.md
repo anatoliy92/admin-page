@@ -9,6 +9,7 @@
 ```
 $ composer require avl/admin-page
 ```
+Или в секцию **require** добавить строчку *"avl/admin-page": "^1.0"*.
 
 ```json
 {
