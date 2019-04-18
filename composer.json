@@ -1,0 +1,29 @@
+{
+    "name": "avl/admin-page",
+    "description": "Pages module for CMS IRsite",
+    "license": "MIT",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Lyos Anatoliy",
+            "email": "les.anatoliy.92@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+      "psr-4": {
+          "Avl\\AdminPage\\": "src/"
+      }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Avl\\AdminPage\\AdminPageServiceProvider"
+            ],
+            "aliases": {
+                "AdminPage": "Avl\\AdminPage\\AdminPageServiceProvider"
+            }
+        }
+    }
+}
