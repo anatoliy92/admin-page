@@ -1,7 +1,7 @@
 <?php namespace Avl\AdminPage\Controllers\Admin;
 
 use App\Http\Controllers\Avl\AvlController;
-use Avl\AdminPage\Models\Pages;
+use Avl\AdminPage\Models\Page;
 use App\Models\{Sections, Langs};
 use Illuminate\Http\Request;
 use Cache;
@@ -20,7 +20,7 @@ class PageController extends AvlController
 		{
 			$section = Sections::whereId($id)->firstOrFail();
 
-			if (!$section->page) { $section->page()->save(new Pages()); }
+			if (!$section->page) { $section->page()->save(new Page()); }
 
 			$this->authorize('update', $section);
 
@@ -37,7 +37,7 @@ class PageController extends AvlController
 					'button' => 'required|in:add,save',
 					'page_description_ru' => '',
 			]);
-			$page = Pages::findOrFail($page_id);
+			$page = Page::findOrFail($page_id);
 
 			foreach ($this->langs as $lang) {
 				$page->{'description_' . $lang->key} = $request->input('page_description_' . $lang->key) ?? null;
