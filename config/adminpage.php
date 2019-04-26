@@ -25,7 +25,13 @@ return [
 	/**
 	 * Формат возможных для загрузки изображений
 	 */
-	'valid_image_types' => ['jpg', 'jpeg', 'gif', 'png', 'JPEG', 'JPG', 'PNG', 'GIF']
+	'valid_image_types' => ['jpg', 'jpeg', 'gif', 'png', 'JPEG', 'JPG', 'PNG', 'GIF'],
 
-
+	/**
+	 * Доступные модули
+	 */
+	'modules' => [
+		'image' => 'Загрузка изображений',
+		'file' => 'Загрузка файлов'
+	]
 ];

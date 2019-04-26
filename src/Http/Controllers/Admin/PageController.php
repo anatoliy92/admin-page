@@ -20,9 +20,11 @@ class PageController extends AvlController
 		{
 			$section = Sections::whereId($id)->firstOrFail();
 
+			$this->authorize('update', $section);
+
 			if (!$section->page) { $section->page()->save(new Page()); }
 
-			$this->authorize('update', $section);
+			$section = Sections::whereId($id)->firstOrFail();
 
 			return view('adminpage::pages.index', [
 					'section' => $section,

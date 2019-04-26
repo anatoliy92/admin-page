@@ -29,8 +29,10 @@
 							<a class="nav-link @if($lang->key == "ru") active show @endif" href="#{{ $lang->key }}" data-toggle="tab"> {{ $lang->name }} </a>
 						</li>
 					@endforeach
-					<li class="nav-item"><a class="nav-link" href="#photo" data-toggle="tab">Фото</a></li>
-					<li class="nav-item"><a class="nav-link" href="#files" data-toggle="tab">Файлы</a></li>
+
+					@if (array_key_exists('image', $section->modules ?? [])) <li class="nav-item"><a class="nav-link" href="#image" data-toggle="tab">Фото</a></li> @endif
+
+					@if (array_key_exists('file', $section->modules ?? [])) <li class="nav-item"><a class="nav-link" href="#file" data-toggle="tab">Файлы</a></li> @endif
 				</ul>
 				<div class="tab-content">
 					@foreach ($langs as $lang)
@@ -39,47 +41,52 @@
 						</div>
 					@endforeach
 
-					<div class="tab-pane" id="photo" role="tabpanel">
-						<div class="block--file-upload">
-							<input id="upload-photos" name="upload" type="file" />
+					@if (array_key_exists('image', $section->modules ?? []))
+						<div class="tab-pane" id="image" role="tabpanel">
+							<div class="block--file-upload">
+								<input id="upload-photos" name="upload" type="file" />
+							</div>
+							<div class="row">
+								<div class="photo--news col-lg-12">
+									<ul id="sortable" class="row list-unstyled">
+										@php $images = $section->page->media('image')->orderBy('sind', 'DESC')->get(); @endphp
+										@if ($images)
+											@foreach ($images as $image)
+												@include('adminpage::pages.snippets.image')
+											@endforeach
+										@endif
+									</ul>
+								</div>
+							</div>
 						</div>
-						<div class="row">
-							<div class="photo--news col-lg-12">
-								<ul id="sortable" class="row list-unstyled">
-									@php $images = $section->page->media('image')->orderBy('sind', 'DESC')->get(); @endphp
-									@if ($images)
-										@foreach ($images as $image)
-											@include('adminpage::pages.snippets.image')
+					@endif
+
+					@if (array_key_exists('file', $section->modules ?? []))
+						<div class="tab-pane" id="file" role="tabpanel">
+							<div class="block--file-upload">
+								<div class="form-group">
+									<select class="form-control" id="select--language-file">
+										@foreach($langs as $lang)
+											<option value="{{ $lang->key }}">{{ $lang->key }}</option>
 										@endforeach
-									@endif
-								</ul>
+									</select>
+								</div>
+								<input id="upload-files" name="upload" type="file" />
+							</div>
+							<div class="row files--news">
+								<div class="col-md-12">
+									<ul id="sortable-files" class="list-group">
+										@php $files = $section->page->media('file')->orderBy('sind', 'DESC')->get(); @endphp
+										@if ($files)
+											@foreach ($files as $file)
+												@include('adminpage::pages.snippets.file')
+											@endforeach
+										@endif
+									</ul>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="tab-pane" id="files" role="tabpanel">
-						<div class="block--file-upload">
-							<div class="form-group">
-								<select class="form-control" id="select--language-file">
-									@foreach($langs as $lang)
-										<option value="{{ $lang->key }}">{{ $lang->key }}</option>
-									@endforeach
-								</select>
-							</div>
-							<input id="upload-files" name="upload" type="file" />
-						</div>
-						<div class="row files--news">
-							<div class="col-md-12">
-								<ul id="sortable-files" class="list-group">
-									@php $files = $section->page->media('file')->orderBy('sind', 'DESC')->get(); @endphp
-									@if ($files)
-										@foreach ($files as $file)
-											@include('adminpage::pages.snippets.file')
-										@endforeach
-									@endif
-								</ul>
-							</div>
-						</div>
-					</div>
+					@endif
 				</div>
 				<br/>
 			</form>
