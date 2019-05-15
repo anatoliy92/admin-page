@@ -11,7 +11,7 @@
 			</div>
 		</div>
 		<div class="card-body p-0">
-			<img src="{{ env('STORAGE_URL') . $image['url'] }}">
+			<img src="/image/resize/200/190/{{ $image['url'] }}">
 		</div>
 		<div class="card-footer">
 			<div class="row">

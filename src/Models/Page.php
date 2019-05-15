@@ -9,7 +9,7 @@ class Page extends Model
 {
 	use ModelTrait;
 
-	protected $tables = 'pages';
+	protected $table = 'pages';
 
 	protected $modelName = __CLASS__;
 
