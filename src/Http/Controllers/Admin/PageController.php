@@ -8,52 +8,50 @@ use Cache;
 
 class PageController extends AvlController
 {
-		protected $langs = null;
+    protected $langs = null;
 
-		public function __construct (Request $request) {
-			parent::__construct($request);
+    protected $section;
 
-			$this->langs = Langs::get();
-		}
+    public function __construct (Request $request) {
+        parent::__construct($request);
 
-		public function index($id)
-		{
-			$section = Sections::whereId($id)->firstOrFail();
+        $this->langs = Langs::get();
 
-			$this->authorize('update', $section);
+        $this->section = Sections::whereId($request->id)->first() ?? null;
+    }
 
-			if (!$section->page) { $section->page()->save(new Page()); }
+    public function index()
+    {
+        if (!$this->section->page) { $this->section->page()->save(new Page()); }
 
-			$section = Sections::whereId($id)->firstOrFail();
+        return view('adminpage::pages.index', [
+            'section' => $this->section->refresh(),
+            'langs' => $this->langs,
+        ]);
+    }
 
-			return view('adminpage::pages.index', [
-					'section' => $section,
-					'langs' => $this->langs,
-			]);
-		}
+    public function update(Request $request, $id, $page_id = null)
+    {
+        $this->section = Sections::whereId($request->id)->first() ?? null;
 
-		public function update(Request $request, $id, $page_id = null)
-		{
+        $this->validate(request(), [
+            'button' => 'required|in:add,save',
+            'page_description_ru' => '',
+        ]);
+        $page = Page::findOrFail($page_id);
 
-			$this->validate(request(), [
-					'button' => 'required|in:add,save',
-					'page_description_ru' => '',
-			]);
-			$page = Page::findOrFail($page_id);
+        foreach ($this->langs as $lang) {
+            $page->{'description_' . $lang->key} = $request->input('page_description_' . $lang->key) ?? null;
 
-			foreach ($this->langs as $lang) {
-				$page->{'description_' . $lang->key} = $request->input('page_description_' . $lang->key) ?? null;
+            // Параллельно очищаем кэш страниц
+            if (Cache::has('page--' . $lang->key . '-' . $id)) {
+                Cache::forget('page--' . $lang->key . '-' . $id);
+            }
+        }
 
-				// Параллельно очищаем кэш страниц
-				if (Cache::has('page--' . $lang->key . '-' . $id)) {
-					Cache::forget('page--' . $lang->key . '-' . $id);
-				}
-			}
-
-			if ($page->save()) {
-				return redirect()->back()->with(['success' => ['Сохранение прошло успешно!']]);
-			}
-			return redirect()->back()->with(['errors' => ['Что-то пошло не так.']]);
-		}
-
+        if ($page->save()) {
+            return redirect()->back()->with(['success' => ['Сохранение прошло успешно!']]);
+        }
+        return redirect()->back()->with(['errors' => ['Что-то пошло не так.']]);
+    }
 }

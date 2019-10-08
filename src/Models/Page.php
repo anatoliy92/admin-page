@@ -15,8 +15,12 @@ class Page extends Model
 
 	protected $lang = null;
 
-	public function __construct ()
+	protected $guarded = [];
+
+	public function __construct (array $attributes = array())
 	{
+		parent::__construct($attributes);
+
 		$this->lang = LaravelLocalization::getCurrentLocale();
 	}
 
