@@ -29,6 +29,20 @@ class Page extends Model
 		return Media::whereModel('Avl\AdminPage\Models\Page')->where('model_id', $this->id)->where('type', $type);
 	}
 
+    public function images ()
+    {
+        return $this->media('image')->where(function ($query) {
+            $query->whereNull('lang')->orWhere('lang', $this->lang);
+        })->whereGood(true)->orderBy('main', 'DESC')->orderBy('sind', 'DESC')->get();
+    }
+
+    public function files ()
+    {
+        return $this->media('file')->where(function ($query) {
+            $query->whereNull('lang')->orWhere('lang', $this->lang);
+        })->whereGood(true)->orderBy('sind', 'DESC')->get();
+    }
+
 	public function getTextAttribute ($value, $lang = null) {
 		$text = (!is_null($lang)) ? $lang : $this->lang;
 

@@ -1,5 +1,6 @@
 <?php namespace Avl\AdminPage\Controllers\Admin;
 
+use Darmen\Moderation\Services\ModerationService;
 use App\Http\Controllers\Avl\AvlController;
 use Avl\AdminPage\Models\Page;
 use App\Models\{Sections, Langs};
@@ -12,12 +13,19 @@ class PageController extends AvlController
 
     protected $section;
 
-    public function __construct (Request $request) {
+    /** @var ModerationService  */
+    private $moderationService;
+
+    public function __construct (Request $request, ModerationService $moderationService) {
         parent::__construct($request);
 
         $this->langs = Langs::get();
 
-        $this->section = Sections::whereId($request->id)->first() ?? null;
+        $this->section = Sections::find($request->id) ?? null;
+
+        view()->share([ 'section' => $this->section ]);
+
+        $this->moderationService = $moderationService;
     }
 
     public function index()
@@ -30,22 +38,21 @@ class PageController extends AvlController
         ]);
     }
 
-    public function update(Request $request, $id, $page_id = null)
+    public function update(Request $request)
     {
-        $this->section = Sections::whereId($request->id)->first() ?? null;
-
         $this->validate(request(), [
             'button' => 'required|in:add,save',
             'page_description_ru' => '',
         ]);
-        $page = Page::findOrFail($page_id);
+
+        $page = Page::findOrFail($request->page);
 
         foreach ($this->langs as $lang) {
             $page->{'description_' . $lang->key} = $request->input('page_description_' . $lang->key) ?? null;
 
             // Параллельно очищаем кэш страниц
-            if (Cache::has('page--' . $lang->key . '-' . $id)) {
-                Cache::forget('page--' . $lang->key . '-' . $id);
+            if (Cache::has('page--' . $lang->key . '-' . $this->section->id)) {
+                Cache::forget('page--' . $lang->key . '-' . $this->section->id);
             }
         }
 

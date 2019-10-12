@@ -2,7 +2,7 @@
 	"name": "avl/admin-page",
 	"description": "Page module for CMS IRsite",
 	"license": "MIT",
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"authors": [
 		{
 			"name": "Lyos Anatoliy",
